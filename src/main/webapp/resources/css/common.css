@@ -1,0 +1,58 @@
+/* header */
+
+
+body .navbar-fixed-top{
+  background-color : #328080;
+}
+
+.navbar-default .navbar-brand{
+  color : white;
+}
+
+.votree-border-none {
+  border: none;
+}
+/* footer */
+html, body {
+  background-color : #EEF2F7;
+  height: 100%;
+}
+
+body {
+  margin: 0
+}
+
+#foot {
+  height: 50px;
+  background-color: #328080;
+  color: white;
+  line-height: 50px;
+  text-align: left;
+  font-size: 15px;
+  position: absolute;
+  width: 100%;
+  margin: -50px auto 0; /* foot의 크기만큼 위로 올리기 */
+}
+
+#body {
+  min-height: 100%;
+  padding-bottom: 90px; /* footer의 크기만큼 패딩   */
+}
+
+#content {
+  padding-bottom: 1.9em
+}
+
+#copyright {
+  margin-left: 20em;
+}
+
+.span-length-limit {
+  text-overflow: ellipsis; /* will make [...] at the end */
+  max-width: 260px; /* change to your preferences */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 25px;
+}

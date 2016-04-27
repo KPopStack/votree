@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.ResponseCheckMapper">
+
+  <insert id="insertResponseTime" parameterType="responseCheck" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    tbl_response_check
+    (date, uri, average, standard_deviation)
+    VALUES
+    (#{date}, #{uri}, #{average}, #{standardDeviation});
+  </insert>
+
+
+  <select id="selectAverageDatumForChart" parameterType="map" resultMap="averageDatumForLineChartResultMap">
+    SELECT id, uri, average
+    FROM tbl_response_check
+    WHERE uri = #{uri} AND date LIKE '%${scope}%'
+    ORDER BY date ASC;
+  </select>
+  
+  <resultMap type="java.util.HashMap" id="averageDatumForLineChartResultMap">
+    <collection property="data" javaType="java.util.ArrayList" ofType="int">
+      <result column="average"/>
+    </collection>
+  </resultMap>
+  
+   <select id="selectSdDatumForChart" parameterType="map" resultMap="SdDatumForLineChartResultMap">
+    SELECT uri, standard_deviation
+    FROM tbl_response_check
+    WHERE uri = #{uri} AND date LIKE '%${scope}%'
+    ORDER BY date ASC;
+  </select>
+  
+  <resultMap type="java.util.HashMap" id="SdDatumForLineChartResultMap">
+    <collection property="data" javaType="java.util.ArrayList" ofType="int">
+      <result column="standard_deviation"/>
+    </collection>
+  </resultMap>
+  
+  <select id="selectCategoriesForChart" parameterType="map" resultMap="categoriesForLineChartResultMap">
+    SELECT date
+    FROM tbl_response_check
+    WHERE date LIKE '%${scope}%'
+    GROUP BY date
+    ORDER BY date ASC;
+  </select>
+  
+  <resultMap type="string" id="categoriesForLineChartResultMap">
+      <result column="date"/>
+  </resultMap>
+</mapper>

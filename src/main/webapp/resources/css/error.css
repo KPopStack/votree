@@ -1,0 +1,24 @@
+.text-center {
+  width: 60%;
+  height: 100%;
+  text-align: center;
+}
+
+.tree-img {
+  width:50%;
+  display: block;
+  margin:50px auto 30px;
+}
+
+.error-font {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 35px;
+}
+
+.error-font-message {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 35px;
+  color: #121;
+}

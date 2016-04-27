@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.VotreeMapper">
+  <!-- update id="createTable"> CREATE TABLE IF NOT EXISTS MEMBERS ( MNO 
+    INTEGER NOT NULL AUTO_INCREMENT, EMAIL VARCHAR(40) NOT NULL, PWD VARCHAR(100) 
+    NOT NULL, MNAME VARCHAR(50) NOT NULL, CRE_DATE DATETIME NOT NULL, MOD_DATE 
+    DATETIME NOT NULL, PRIMARY KEY(MNO) ) </update -->
+
+  <insert id="insertVotree" parameterType="votree" >
+    INSERT INTO tbl_votree
+    (votree_id, title, start_datetime, due_datetime,
+    proposer_user_id, votree_type_code_id, password, created_datetime)
+    VALUES
+    (#{id}, #{title},
+    #{startDatetime}, #{dueDatetime}, #{proposerId}, #{type}, #{plainPassword}, NOW())
+  </insert>
+  
+   <update id="updateVotree" parameterType="votree">
+      UPDATE tbl_votree
+      SET
+      title = #{title}, start_datetime = #{startDatetime}, due_datetime = #{dueDatetime}, votree_type_code_id = #{type}, password = #{plainPassword}
+      WHERE
+      votree_id = #{id}
+  </update>
+   
+  <select id="selectVotrees" resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime
+    FROM tbl_votree 
+    ORDER BY due_datetime ASC;
+  </select>
+  
+  <!-- 제외할 수,6개씩 가져오기 -->
+  <select id="selectVotreesOnRunningState" parameterType="int"
+    resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime 
+    FROM tbl_votree 
+    WHERE due_datetime &gt; now() AND start_datetime &lt; NOW() 
+    ORDER BY due_datetime ASC, votree_id ASC LIMIT #{num}, 60;
+  </select>
+  
+  <select id="selectVotreesOnRunningStateByUserId" parameterType="int"
+    resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime
+    FROM tbl_votree 
+    WHERE proposer_user_id = #{userId} AND due_datetime &gt; NOW() AND start_datetime &lt; NOW() 
+    ORDER BY due_datetime ASC, votree_id ASC;
+  </select>
+
+  <select id="selectVotreesOnExpiredState" parameterType="int"
+    resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime 
+    FROM tbl_votree 
+    WHERE due_datetime &lt; NOW()
+    ORDER BY due_datetime ASC, votree_id ASC Limit #{num}, 60;
+  </select>
+  
+  <select id="selectVotreesOnExpiredStateByUserId" parameterType="int"
+    resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime 
+    FROM tbl_votree 
+    WHERE proposer_user_id = #{userId} AND due_datetime &lt; NOW()
+    ORDER BY due_datetime ASC, votree_id ASC;
+  </select>
+  
+  <select id="selectJoinedVotreesByUserId" parameterType="int" resultMap="votreeResultMap">
+    SELECT distinct V1.votree_id, V1.title, V1.start_datetime, V1.due_datetime, V1.proposer_user_id, V1.votree_type_code_id, V1.password, V1.turnout, V1.hit, V1.updated_datetime, BOX.created_datetime
+    FROM (
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime 
+        FROM tbl_votree 
+        WHERE votree_id = ANY(
+          SELECT votree_id FROM tbl_vote_box WHERE user_id=#{userId} GROUP BY votree_id
+          )
+        ORDER BY created_datetime ASC, votree_id ASC
+    ) V1 join tbl_vote_box BOX on V1.votree_id = BOX.votree_id and BOX.user_id = #{userId}
+    ORDER BY BOX.created_datetime DESC
+  </select>
+
+  <select id="selectVotreeByVotreeId" parameterType="java.lang.String" resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime
+    FROM tbl_votree
+    WHERE votree_id = #{votree_id};
+  </select>
+
+  <select id="selectVotreesByUserId" parameterType="int" resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime
+    FROM tbl_votree
+    WHERE proposer_user_id = #{id};
+  </select>
+
+  <select id="selectVotreeByVotreeIdAndUserId" parameterType="java.util.HashMap"  resultMap="votreeResultMap">
+    SELECT votree_id, title, start_datetime, due_datetime, proposer_user_id, votree_type_code_id, password, turnout, hit, updated_datetime, created_datetime,
+        (SELECT count(*) FROM tbl_vote_box WHERE votree_id = #{votree_id} AND user_id = #{user_id}) AS voting_count
+    FROM tbl_votree
+    WHERE votree_id = #{votree_id};
+  </select>
+
+  <select id="updateVotreeHit" parameterType="Votree">
+    UPDATE tbl_votree SET hit = (#{hit}) WHERE votree_id = #{id};
+  </select>
+
+  <select id="selectVotreeWithUserChoiceByVotreeIdAndUserId" parameterType="java.util.HashMap" resultMap="votreeTotalInfoResultMap">
+    SELECT VOTREE.votree_id, VOTREE.title, VOTREE.start_datetime, VOTREE.due_datetime, VOTREE.proposer_user_id, VOTREE.votree_type_code_id, VOTREE.password, 
+        VOTREE.turnout, VOTREE.hit, VOTREE.updated_datetime, VOTREE.created_datetime, VOTE.topic, VOTE.duplicate_yn, VOTE.preview_yn, VOTE.weight, 
+        ITEM.category_id, ITEM.vote_id, ITEM.vote_item_value, ITEM.vote_item_id AS 'vote_item_id'
+        <if test="userId != null">, !ISNULL(BOX.vote_item_id) AS 'is_voted'</if> 
+    FROM tbl_votree VOTREE 
+        JOIN tbl_vote VOTE ON VOTE.votree_ID = VOTREE.votree_id 
+        JOIN tbl_vote_item ITEM ON ITEM.vote_id = VOTE.vote_id
+        <if test="userId != null">
+        LEFT JOIN tbl_vote_box BOX ON VOTE.vote_id = BOX.vote_id AND ITEM.vote_item_id = BOX.vote_item_id AND BOX.user_id = #{userId}
+        </if>
+    WHERE VOTREE.votree_id = #{votreeId}
+    ORDER BY VOTE.vote_id ASC
+  </select>
+
+<!--   <resultMap type="com.toast.votree.vo.Voting" id="votingResultMap">
+    <id property="id" column="votree_id" />
+    <result property="title" column="title" />
+    <collection property="voteList" javaType="java.util.ArrayList" ofType="com.toast.votree.vo.Vote">
+        <id property="id" column="vote_id" />
+        <result property="topic" column="topic" />
+        <result property="duplicateYN" column="duplicate_yn" />
+        <result property="previewYN" column="preview_yn" />
+        <result property="weight" column="weight" />
+        <collection property="voteItemList" javaType="java.util.ArrayList" ofType="com.toast.votree.vo.VoteItem">
+          <id property="id" column="vote_item_id" />
+          <result property="categoryId" column="category_id" />
+          <result property="value" column="vote_item_value" />
+          <result property="isVoted" column="is_voted" />
+        </collection>
+    </collection>
+  </resultMap> -->
+  
+  <resultMap type="java.util.HashMap" id="votreeTotalInfoResultMap">
+    <id property="id" column="votree_id" />
+    <result property="title" column="title" />
+    <result property="startDatetime" column="start_datetime" />
+    <result property="dueDatetime" column="due_datetime" />
+    <result property="proposerId" column="proposer_user_id" />
+    <result property="type" column="votree_type_code_id" />
+    <result property="plainPassword" column="password" />
+    <result property="turnout" column="turnout" />
+    <result property="hit" column="hit" />
+    <collection property="subVoteList" javaType="java.util.ArrayList" ofType="map">
+        <id property="voteId" column="vote_id" />
+        <result property="topic" column="topic" />
+        <result property="duplicateYN" column="duplicate_yn" />
+        <result property="previewYN" column="preview_yn" />
+        <result property="weight" column="weight" />
+        <collection property="voteItemList" javaType="java.util.ArrayList" ofType="map">
+          <id property="itemId" column="vote_item_id" />
+          <result property="categoryId" column="category_id" />
+          <result property="value" column="vote_item_value" />
+          <result property="isVoted" column="is_voted" />
+        </collection>
+    </collection>
+  </resultMap>
+
+  <resultMap type="votree" id="votreeResultMap">
+    <id property="id" column="votree_id" />
+    <result property="title" column="title" />
+    <result property="startDatetime" column="start_datetime" />
+    <result property="dueDatetime" column="due_datetime" />
+    <result property="proposerId" column="proposer_user_id" />
+    <result property="type" column="votree_type_code_id" />
+    <result property="plainPassword" column="password" />
+    <result property="turnout" column="turnout" />
+    <result property="hit" column="hit" />
+    <result property="votingCount" column="voting_count" />
+    <result property="proposerName" column="name" />
+  </resultMap>
+</mapper>

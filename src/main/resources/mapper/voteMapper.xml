@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.VoteMapper">
+    
+    <insert id="insertVote" parameterType="vote" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tbl_vote
+        (votree_id, topic, duplicate_yn, preview_yn, weight, created_datetime)
+        VALUES
+        (#{votreeId}, #{topic}, #{duplicateYN}, #{previewYN}, #{weight}, NOW())
+    </insert>
+     <update id="updateVote" parameterType="vote">
+        UPDATE tbl_vote
+        SET
+        duplicate_yn = #{duplicateYN}
+        WHERE
+        vote_id = #{id}
+    </update>
+    
+    <select id="selectVotesByVotreeID" parameterType="string" resultMap="voteResultMap">
+        SELECT vote_id, votree_id, topic, duplicate_yn, preview_yn, weight, updated_datetime, created_datetime 
+        FROM tbl_vote 
+        WHERE votree_id = #{id};
+    </select>
+    
+    <select id="selectVoteByVoteId" parameterType="int" resultMap="voteResultMap">
+        SELECT vote_id, votree_id, topic, duplicate_yn, preview_yn, weight, updated_datetime, created_datetime 
+        FROM tbl_vote 
+        WHERE vote_id = #{id};
+    </select>
+    
+    <select id="selectTopResultsByVotreeId" parameterType="string" resultMap="voteTopResultMap">
+        SELECT VOTE.topic, ITEM.vote_item_value, VOTING.vote_id, ITEM.vote_item_id, ITEM.category_id AS 'vote_item_category', vote_per_selection AS 'top' 
+        FROM (
+          select v1.vote_id, v2.vote_item_id, v2.vote_per_selection
+          from (
+            select vote_id, vote_item_id, max(vote_per_selection) as vote_per_selection 
+            from (
+              SELECT vote_id, vote_item_id, COUNT(*) AS 'vote_per_selection'
+              FROM tbl_vote_box 
+              WHERE votree_id=#{votreeId}
+              GROUP BY vote_id, vote_item_id
+              ORDER BY vote_per_selection DESC
+            ) t1
+            group by vote_id
+          ) v1
+          left join (
+            SELECT vote_id, vote_item_id, COUNT(*) AS 'vote_per_selection'
+            FROM tbl_vote_box 
+            WHERE votree_id=#{votreeId}
+            GROUP BY vote_id, vote_item_id
+            ORDER BY vote_per_selection DESC
+          ) v2 on v1.vote_item_id=v2.vote_item_id and v1.vote_per_selection=v2.vote_per_selection
+        ) VOTING JOIN tbl_vote VOTE ON VOTING.vote_id = VOTE.vote_id
+            JOIN tbl_vote_item ITEM ON VOTING.vote_item_id = ITEM.vote_item_id
+    </select>
+    
+    <select id="selectTotalResultsByVotreeId" parameterType="string" resultMap="voteTotalResultMap">
+        SELECT BOX.vote_id, BOX.vote_item_id, ITEM.vote_item_value, COUNT(*) AS 'vote_per_selection'
+        FROM tbl_vote_box BOX 
+            JOIN tbl_vote VOTE ON BOX.vote_id = VOTE.vote_id 
+            JOIN tbl_vote_item ITEM ON BOX.vote_item_id = ITEM.vote_item_id
+        WHERE BOX.votree_id=#{votree_id}
+        GROUP BY vote_id, vote_item_id
+        ORDER BY vote_id ASC;
+    </select>
+    
+    <resultMap type="vote" id="voteResultMap">
+        <id property="id" column="vote_id" />
+        <result property="votreeId" column="votree_id" />
+        <result property="topic" column="topic" />
+        <result property="duplicateYN" column="duplicate_yn" />
+        <result property="previewYN" column="preview_yn" />
+        <result property="weight" column="weight" />
+    </resultMap>
+    
+    <resultMap type="voteTopResult" id="voteTopResultMap">
+        <result property="topic" column="topic"/>
+        <result property="value" column="vote_item_value"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="userSelection" column="vote_item_id"/>
+        <result property="topCount" column="top"/>
+        <result property="voteItemCategory" column="vote_item_category"/>
+    </resultMap>
+
+    <resultMap type="voteTotalResult" id="voteTotalResultMap">
+        <result property="voteId" column="vote_id"/>
+        <result property="userSelection" column="vote_item_id"/>
+        <result property="votePerSelection" column="vote_per_selection"/>
+        <result property="value" column="vote_item_value"/>
+    </resultMap>  
+</mapper>

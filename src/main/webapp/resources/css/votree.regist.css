@@ -1,0 +1,173 @@
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 800px;
+    margin: 30px auto;
+  }
+}
+
+.regist-header{
+  color : white;
+  background-color : #35455A;
+}
+
+.votree-regist-container{
+  min-height:600px;
+}
+.votree-regist-body{
+  padding : 0px;
+}
+
+.modal-body .tabpanel{
+  padding-top:5px;  
+  background-color :#EEF2F7;
+}
+.modal-footer{
+  border-top: solid #C8C8C8;
+  padding : 15px;
+}
+
+.tab-pane{
+  padding:15px;
+  background-color : white;
+  
+}
+
+.vote-topic {
+  margin: 20px 0;
+}
+#tabs{
+  background-color : #EEF2F7;
+}
+.nav .nav-tabs li{
+  background-color : white;
+}
+.votree-regist-sidebar{
+  background-color : #EEF2F7;
+  border-left: solid #C8C8C8;
+  padding : 15px;
+  min-height:600px;
+} 
+
+.close{
+  color : white;  
+}
+
+.vote-default-config{
+  border-bottom: solid #C8C8C8;
+}
+
+
+.vote-regist-footer{
+  text-align : center;
+  background-color : #EEF2F7;
+  border-top: solid #C8C8C8;
+  padding : 15px;
+}
+
+.btn-file {
+  margin: -40px 0 20px 0;
+}
+
+.vote-item-input {
+  margin-bottom: 20px;
+}
+
+.sidebar-item{
+  background-color : #EEF2F7;;
+  padding-top:20px;
+  padding-bottom:20px;
+  border : 0px;
+}
+
+.vote-regist-tab-content{
+  background-color : white;
+  min-height :550px;
+}
+
+
+.tabs-list{
+  text-align : center;
+  font-size : 14px;
+  
+}
+#tabs li{
+    width : 20%;
+}
+
+/*
+    Check box
+*/
+.material-switch{
+  margin-top:10px;
+}
+
+.material-switch > input[type="checkbox"] {
+    display: none;   
+}
+
+.material-switch > label {
+    cursor: pointer;
+    height: 0px;
+    position: relative; 
+    width: 40px;  
+}
+
+.material-switch > label::before {
+    background: rgb(0, 0, 0);
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.4s ease-in-out;
+    width: 40px;
+}
+.material-switch > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 24px;
+    left: -4px;
+    margin-top: -8px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.3s ease-in-out;
+    width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+    background: inherit;
+    opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+    background: inherit;
+    left: 20px;
+}
+
+
+.vote-attribute{
+  padding : 15px;
+}
+
+.question-number{
+  padding : 15px;
+  font-size:20px;
+}
+
+.youtube-input{
+  border-color : red;
+  margin-bottom: 10px;
+}
+#layer{
+  display: none;
+}
+
+.vote-attribute-del-btn{
+  z-index : 10;
+  padding : 0px;
+}
+.vote-attribute-add-btn{
+  z-index : 10;
+}

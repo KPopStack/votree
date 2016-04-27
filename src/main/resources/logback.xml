@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+  <!-- Appenders -->
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <param name="Target" value="System.out" />
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>▶ [%-5level]%d{HH:mm}[%logger] (%file:%line\):%method\(\) - %msg%n</Pattern>
+    </layout>
+  </appender>
+
+  <appender name="logncrash-http" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <param name="collectorUrl" value="http://api-logncrash.cloud.toast.com" />
+    <param name="appKey" value="${property.logncrash.key}" />
+    <param name="version" value="1.0.0" />
+    <param name="logSource" value="web" />
+    <param name="logType" value="${property.logncrash.type}" />
+    <param name="errorCodeType" value="default" />
+    <param name="enable" value="true" />
+    <param name="debug" value="false" />
+  </appender>
+  <!-- LogNCrash Logback Async Appender -->
+  <appender name="logncrash-async" class="com.toast.java.logncrash.logback.LogNCrashAsyncAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+    <param name="BlockWhenFull" value="false" />
+    <param name="IncludeCallerData" value="true" />
+    <param name="QueueCapacity" value="2048" />
+    <appender-ref ref="logncrash-http" />
+  </appender>
+
+  <!-- file로 log 남기기 -->
+  <timestamp key="byDay" datePattern="yyyy-MM-dd" />
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <file>${HOME}/logs/votree/votree-${byDay}.txt</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>/logs/votree-${byDay}.log.zip</fileNamePattern>
+      <maxHistory>3</maxHistory>
+      <maxFileSize>100MB</maxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>
+        ▶ %-5level %d{HH:mm:ss.SSS} [%thread] %logger[%method:%line] - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+
+  <!-- Application Loggers -->
+  <logger name="com.toast.votree">
+    <level value="debug" />
+  </logger>
+  
+  <logger name="org.apache.http">
+    <level value="warn" />
+  </logger>
+
+  <!-- Query Loggers -->
+  <logger name="com.toast.votree.sharding">
+    <level value="WARN" />
+  </logger>
+
+  <logger name="org.mybatis.spring">
+    <level value="WARN" />
+  </logger>
+
+  <logger name="org.mybatis.spring.transaction">
+    <level value="WARN" />
+  </logger>
+
+  <!-- 3rdparty Loggers -->
+  <logger name="org.springframework">
+    <level value="WARN" />
+  </logger>
+
+  <logger name="twitter4j">
+    <level value="WARN" />
+  </logger>
+  <!-- Root Logger -->
+  <root>
+    <priority value="error" />
+    <appender-ref ref="console" />
+    <appender-ref ref="file" />
+    <appender-ref ref="logncrash-http" />
+  </root>
+
+</configuration>

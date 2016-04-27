@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util 
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+  <util:properties id="config" location="${property.name}"/>
+
+  <!-- DB 1 -->
+  <bean id="dataSource1" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="#{config['db1.url']}" />
+    <property name="username" value="#{config['db1.username']}" />
+    <property name="password" value="#{config['db1.password']}" />
+  </bean>
+
+  <bean id="sqlSessionFactory1" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource1" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate1" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory1" />
+  </bean>
+  <!-- DB 2 -->
+  <bean id="dataSource2" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="#{config['db2.url']}" />
+    <property name="username" value="#{config['db2.username']}" />
+    <property name="password" value="#{config['db2.password']}" />
+  </bean>
+
+  <bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource2" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate2" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory2" />
+  </bean>
+
+  <!-- DB common -->
+  <bean id="dataSource_common" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="#{config['db3.url']}" />
+    <property name="username" value="#{config['db3.username']}" />
+    <property name="password" value="#{config['db3.password']}" />
+  </bean>
+
+  <bean id="sqlSessionFactory_common" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource_common" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate_common" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory_common" />
+  </bean>
+
+  <!-- JEDIS -->
+  <bean id="jedisConnectionFactory" class="com.toast.votree.factory.StwJedisConnectionPoolFactory" p:use-pool="true" p:host-name="#{config['redis.url']}" p:port="#{config['redis.port']}">
+  </bean>
+
+  <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnectionFactory">
+    <property name="keySerializer">
+      <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+    </property>
+    <property name="hashKeySerializer">
+      <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+    </property>
+  </bean>
+    
+    <bean id="databaseMapperRedisService" class="com.toast.votree.service.DatabaseMapperRedisServiceImpl">
+        <property name="factory" ref="jedisConnectionFactory" />
+        <property name="redisTemplate" ref="redisTemplate" />
+    </bean>
+
+    <bean id="dbShardingManager" class="com.toast.votree.manager.DbShardingManager" >
+      <property name="dbShardingStrategy">
+        <bean class="com.toast.votree.sharding.DbShardingLocationDbStrategy">
+            <property name="databaseMapperRedisService" ref="databaseMapperRedisService" />
+        </bean>
+<!--         <bean class="com.toast.votree.sharding.DbShardingHashFunctionStrategy"/> -->
+      </property>
+      <property name="sqlSessionTemplates">
+        <list>
+          <ref bean="sqlSessionTemplate1" />
+          <ref bean="sqlSessionTemplate2" />
+        </list>
+      </property>
+      <property name="commonSqlSessionTemplate" ref="sqlSessionTemplate_common" />
+    </bean>
+    
+    <!-- L7 Health Check -->
+    <bean id="l7HealthCheckService" class="com.toast.votree.service.L7HealthCheckServiceImpl">
+      <property name="filePathOnDeployCheck" value="#{config['health.check.ondeploy.filepath']}"/>
+    </bean>
+    
+</beans>

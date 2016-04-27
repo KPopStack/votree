@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.UserMapper">
+  <select id="selectUserById" parameterType="int" resultMap="userResultMap">
+    SELECT user_id, email, name, oauth_provider, profile_url, updated_datetime, created_datetime, provider_key
+    FROM tbl_user 
+    WHERE user_id = #{id};
+  </select>
+
+  <insert id="insertUser" parameterType="user" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO
+    tbl_user
+    (user_id, email, name, oauth_provider, profile_url, provider_key)
+    VALUES
+    (#{id}, #{email}, #{name}, #{oauthProvider}, #{profileUrl}, #{providerKey});
+  </insert>
+
+  <update id="updateUser" parameterType="user" >
+    UPDATE tbl_user 
+    SET email = #{email}, name = #{name}, profile_url = #{profileUrl}
+    WHERE user_id = #{id};
+  </update>
+  
+  <select id="selectUserByProviderKey" parameterType="java.lang.String" resultMap="userResultMap">
+    SELECT user_id, email, name, oauth_provider, profile_url, updated_datetime, created_datetime, provider_key
+    FROM tbl_user
+    WHERE provider_key = #{providerKey};
+  </select>
+
+  <select id="selectUsersByNameOrEmail" parameterType="java.lang.String" resultMap="userResultMap">
+    SELECT user_id, email, name, oauth_provider, profile_url, updated_datetime, created_datetime, provider_key
+    FROM tbl_user 
+    WHERE name LIKE '%${value}%' OR email LIKE '%${value}%';
+  </select>
+       
+  <resultMap type="user" id="userResultMap">
+    <id property="id" column="user_id" />
+    <result property="email" column="email" />
+    <result property="name" column="name" />
+    <result property="oauthProvider" column="oauth_provider" />
+    <result property="profileUrl" column="profile_url" />
+    <result property="providerKey" column="provider_key"/>
+    <result property="updatedAt" column="updated_datetime" />
+    <result property="createdAt" column="created_datetime" />
+  </resultMap>
+</mapper>

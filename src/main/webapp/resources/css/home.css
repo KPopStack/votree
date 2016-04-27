@@ -1,0 +1,374 @@
+body {
+  padding-top: 50px;
+}
+
+h4 {
+  margin-top: 25px;
+}
+
+.row .row {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.marketing-box{
+  background-image: url("../../resources/image/nhnent_dark.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-bottom : 1px solid #ddd;
+  margin-bottom : 30px;
+  padding-top: 30px;
+}
+.votree-box {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: white;
+  border: 1px solid #dedede;
+  cursor: pointer;
+  height: 117px;
+/*    height:125px;  */
+}
+
+.votree-go-detail-page {
+  display: inline;
+  margin-right: 10px;
+}
+
+.highlight-blue {
+  color: blue;
+}
+
+.vote-confirm-modal-content {
+  width:500px;
+  margin:50% auto 0;
+}
+
+.vote-confirm-modal-dialog {
+  text-align: center;
+}
+.myVotree {
+  color: #686;
+  font-weight: bold;
+  margin: 0 0 5px 5px;
+}
+.user-box {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: white;
+  border: 1px solid #ededed;
+}
+
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+
+.votree-nav-padding {
+  padding: 15px;
+}
+
+.votree-main-image {
+  height: 160px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  left:50%;
+  display:block;
+}
+.votree-main-image-text {
+  font-size:16px;
+  font-weight:bold;
+}
+.votree-goal{
+  text-align:center;
+  padding-top: 250px;
+}
+.votree-goal-comment {
+  font-size:32px;
+  color: #fff;
+  line-height:60px;
+  font-weight:bold;
+}
+
+#middleBox {
+  padding-top: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 100px;
+  text-align:center;
+}
+
+#middleButton {
+  margin-top:30px;
+  text-align: center;
+}
+
+.btn-center {
+  height: 40px;
+  width: 200px;
+  margin: -40px -100px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+
+.btn-arrow-right, .btn-arrow-left {
+  position: relative;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.btn-arrow-right {
+  padding-left: 36px;
+}
+
+.btn-arrow-left {
+  padding-right: 36px;
+}
+
+.btn-arrow-right:before, .btn-arrow-right:after, .btn-arrow-left:before, .btn-arrow-left:after { /* make two squares (before and after), looking similar to the button */
+  content: "";
+  position: absolute;
+  top: 5px; /* move it down because of rounded corners */
+  width: 22px; /* same as height */
+  height: 22px; /* button_outer_height / sqrt(2) */
+  background: inherit; /* use parent background */
+  border: inherit; /* use parent border */
+  border-left-color: transparent; /* hide left border */
+  border-bottom-color: transparent; /* hide bottom border */
+  border-radius: 0px 4px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+  -webkit-border-radius: 0px 4px 0px 0px;
+  -moz-border-radius: 0px 4px 0px 0px;
+}
+
+.btn-arrow-right:before, .btn-arrow-right:after {
+  transform: rotate(45deg); /* rotate right arrow squares 45 deg to point right */
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+}
+
+.btn-arrow-left:before, .btn-arrow-left:after {
+  transform: rotate(225deg); /* rotate left arrow squares 225 deg to point left */
+  -webkit-transform: rotate(225deg);
+  -moz-transform: rotate(225deg);
+  -o-transform: rotate(225deg);
+  -ms-transform: rotate(225deg);
+}
+
+.btn-arrow-right:before, .btn-arrow-left:before { /* align the "before" square to the left */
+  left: -11px;
+}
+
+.btn-arrow-right:after, .btn-arrow-left:after { /* align the "after" square to the right */
+  right: -11px;
+}
+
+.btn-arrow-right:after, .btn-arrow-left:before { /* bring arrow pointers to front */
+  z-index: 1;
+}
+
+.btn-arrow-right:before, .btn-arrow-left:after { /* hide arrow tails background */
+  background-color: white;
+}
+
+.twitter-typeahead {
+  width: 100%;
+}
+
+.twitter-typeahead .tt-query, .twitter-typeahead .tt-hint {
+  margin-bottom: 0;
+}
+
+.tt-dropdown-menu {
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, .2);
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  width: 100%;
+}
+
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+  color: #fff;
+  background-color: #0081c2;
+  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
+}
+
+.tt-suggestion.tt-is-under-cursor a {
+  color: #fff;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.typeahead, .tt-query, .tt-hint {
+  width: 396px;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 15px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-menu {
+  width: 422px;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.gist {
+  font-size: 14px;
+}
+
+/* example specific styles */
+/* ----------------------- */
+#custom-templates .empty-message {
+  padding: 5px 10px;
+  text-align: center;
+}
+
+#multiple-datasets .league-name {
+  margin: 0 20px 5px 20px;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+#scrollable-dropdown-menu .tt-menu {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+#rtl-support .tt-menu {
+  text-align: right;
+}
+
+.v-btn-left {
+  text-align: left;
+}
+
+.v-btn-left:hover {
+  text-align: left;
+  background-color: #20b7ef;
+}
+
+.votree-input-box{
+  display: block;
+  width: 60%;
+  height: 33px;
+  padding: 5px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  float: left;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+#exTab2{
+  background-color : #EEF2F7;
+}
+
+#tab_a, #tab_b{
+  padding : 0px;
+  background-color : #EEF2F7;
+}
+
+.btn-button-votree {
+    background-color: transparent;
+    border-radius: 13px;
+    color: #fff;
+    font-size: 25px;
+    border: 3px solid #fff;
+}
+.btn-button-votree:hover {
+    background-color: #328080;
+    border-radius: 13px;
+    color: #fff;
+    font-size: 25px;
+    border: 3px solid #328080;
+}

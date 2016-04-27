@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.VotingMapper">
+    
+    <update id="incrementTurnOut" parameterType="string">
+        UPDATE tbl_votree 
+        SET turnout = turnout + 1 
+        WHERE votree_id = #{votreeId}
+    </update>
+    
+    <insert id="insertToVoteBox" parameterType="com.toast.votree.vo.Voting">
+        INSERT INTO tbl_vote_box(user_id, vote_id, vote_item_id, votree_id, created_datetime)
+        VALUES
+        <foreach item="votes" index="index" collection="votes" open="" separator="," close="">
+            <foreach item="choice" index="index" collection="votes.userChoices" open="" separator="," close="">
+            (#{userId}, #{votes.voteId}, #{choice}, #{votreeId}, NOW())
+            </foreach>
+        </foreach>
+    </insert>
+    
+    <delete id="deleteByVoteId" parameterType="com.toast.votree.vo.Voting">
+        DELETE FROM tbl_vote_box
+        WHERE votree_id = #{votreeId} AND user_id = #{userId}
+    </delete>
+     
+</mapper>

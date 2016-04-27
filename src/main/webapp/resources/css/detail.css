@@ -1,0 +1,77 @@
+.detail-screen{
+  heght:100%;
+  width:100%;
+}
+
+.margin-bottom {
+  margin-bottom: 5px;
+}
+.back-white{
+  background-color: #fff;
+}
+.proposer-info{
+  padding-top:20px;
+  font-size:27px;
+  text-align:center;
+}
+.proposer-img{
+  margin: 100px 0 30px 0;
+  width:180px;
+  height:180px;
+  text-align:center;
+}
+.proposer-box {
+  border: 1px solid #fff;
+  text-align:center;
+}
+.votree-title{
+  max-width:100%;
+  margin-top:20px;
+  text-align:left;
+  font-size:35px;
+}
+.votree-top-margin{
+  margin-top:150px;
+}
+.votree-detail-size{
+  font-size:18px;
+}
+.votree-pwd{
+  width: 150px;
+  height:44px;
+  padding: 10px 16px;
+  border: 1px solid #000;
+  display:inline;
+}
+.votree-button-box{
+  height:120px;
+  text-align:left;
+}
+.votree-box-border{
+  border:1px solid #dedede;
+  background-color : white;
+  margin-top : 50px;
+}
+.votree-margin-left{
+  margin-left:20px;
+}
+.votree-proposer-info{
+  text-align:center;
+  height:520px;
+}
+.votree-info-box{
+  height:260px;
+}
+.votree-setting-button{
+  background-color:#fff;
+}
+.votree-sub-size{
+  font-color:#F6F7F8;
+  font-size:22px;
+  padding-left:20px;
+  max-width: 100%;
+}
+.votes-name {
+  font-weight:bold;
+  font-size: 24px;
+}

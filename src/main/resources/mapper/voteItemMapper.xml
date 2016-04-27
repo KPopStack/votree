@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.VoteItemMapper">
+    
+    <insert id="insertVoteItem" parameterType="voteItem">
+        INSERT INTO tbl_vote_item
+        (vote_item_value, vote_id, category_id)
+        VALUES
+        <foreach item="voteItem" index="index" collection="list" open="" separator="," close="">
+            (#{voteItem.value}, #{voteItem.voteId}, #{voteItem.categoryId})
+        </foreach>
+    </insert>
+    
+    <select id ="selectVoteItemsByVoteId" parameterType="int" resultMap="voteItemMap">
+      SELECT vote_item_id, vote_item_value, vote_id, category_id, created_datetime
+      FROM tbl_vote_item
+      WHERE vote_id = #{id}
+    </select>
+    
+    <resultMap type="voteItem" id="voteItemMap">
+        <id property="id" column="vote_item_id"/>
+        <result property="value" column="vote_item_value"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="categoryId" column="category_id"/>
+    </resultMap>
+    
+    <select id ="selectUserChoiceVoteByVoteItemId" parameterType="int" resultMap="userChoiceVoteMap">
+      SELECT ITEM.vote_item_id, ITEM.vote_item_value, ITEM.vote_id, VOTE.topic, ITEM.category_id
+      FROM tbl_vote_item ITEM
+        JOIN tbl_vote VOTE ON ITEM.vote_id = VOTE.vote_id
+      WHERE ITEM.vote_item_id = #{voteItemId}
+    </select>
+    
+    <resultMap type="map" id="userChoiceVoteMap">
+        <id property="vote_item_id" column="vote_item_id"/>
+        <result property="vote_item_value" column="vote_item_value"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="topic" column="topic"/>
+        <result property="categoryId" column="category_id"/>
+    </resultMap>
+</mapper>

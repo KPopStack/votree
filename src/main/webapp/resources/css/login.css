@@ -1,0 +1,22 @@
+.modal-backdrop {
+  z-index: 0;
+}
+.login-modal-title
+{
+  text-align: center;
+}
+.dropdown-Font
+{
+  font-size :14px;
+  text-align:center;
+}
+.votree-dropdown-width
+{
+  min-width:139px;
+}
+
+.votree-logo-size {
+  height: 30px;
+  vertical-align: middle;
+  margin-top: 10px;
+}

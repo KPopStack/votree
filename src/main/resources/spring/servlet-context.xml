@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/util 
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:tx="http://www.springframework.org/schema/tx">
+
+  <util:properties id="config" location="${property.name}" />
+
+  <context:component-scan base-package="com.toast.votree" />
+<!--   <context:annotation-config />
+  <context:mbean-export /> -->
+  
+  <bean class="com.toast.votree.config.RestServer">
+    <property name="hostName" value="#{config['restserver.url']}" />
+    <property name="hostPort" value="#{config['restserver.port']}" />
+  </bean>
+
+  <bean name="restTemplate" class="org.springframework.web.client.RestTemplate">
+    <constructor-arg>
+    <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory" p:readTimeout="3000" p:connectTimeout="3000" />
+    </constructor-arg>
+  </bean>
+
+  <bean name="twitterFactory" class="twitter4j.TwitterFactory" />
+  <!-- ToastCloud DI -->
+  <bean class="com.toast.votree.config.ToastCloud">
+    <property name="account" value="AUTH_475ae884628744d48c4b1daaf8c63c08" />
+    <property name="tenantName" value="ea8SngqC" />
+    <property name="userName" value="seongwon.kong@nhnent.com" />
+    <property name="plainPassword" value="votree!@#123" />
+    <property name="requestUrlForToken"
+      value="https://api-compute.cloud.toast.com/identity/v2.0/tokens" />
+    <property name="requestUrlToUploadObject" value="https://api-storage.cloud.toast.com/v1/" />
+    <property name="requestUrlToGetObject" value="https://api-storage.cloud.toast.com/v1/" />
+    <property name="pathForImages" value="/votree/images/" />
+  </bean>
+  <!-- PaycoOauth DI -->
+  <bean class="com.toast.votree.oauthinfo.Payco">
+    <property name="paycoUri" value="https://alpha-id.payco.com/oauth2.0/" />
+    <property name="paycoUserUri"
+      value="http://tcc1-alpha-id-bo.payco.com:10003/neid_bo/oauth/getUserStatByToken" />
+    <property name="paycoClientId" value="#{config['payco.app.id']}" />
+    <property name="paycoClientSecret" value="#{config['payco.app.secret']}" />
+    <property name="paycoServiceProviderCode" value="PAY" />
+    <property name="redirectUri"
+      value="#{config['payco.redirect.url']}" />
+  </bean>
+  <!-- FacebookOauth DI -->
+  <bean class="com.toast.votree.oauthinfo.Facebook">
+    <property name="facebookAppId" value="#{config['facebook.app.id']}" />
+    <property name="facebookAppSecret" value="#{config['facebook.app.secret']}" />
+    <property name="redirectUri" value="#{config['facebook.redirect.url']}" />
+  </bean>
+  
+  <!-- Twitter DI -->
+  <bean class="com.toast.votree.oauthinfo.Twitter">
+    <property name="consumerKey" value="#{config['twitter.app.id']}"/>
+    <property name="consumerSecret" value="#{config['twitter.app.secret']}"/>
+  </bean>
+  
+      <!-- Toast Search -->
+  <bean id="ToastSearchUser" class="com.toast.votree.service.ToastSearchUser">
+    <property name="indexApiUrl" value="#{config['user.toast.index.url']}" />
+    <property name="searchApiUrl" value="#{config['user.toast.search.url']}" />
+  </bean>
+
+  <bean id="ToastSearchVotree" class="com.toast.votree.service.ToastSearchVotree">
+    <property name="indexApiUrl" value="#{config['votree.toast.index.url']}" />
+    <property name="searchApiUrl" value="#{config['votree.toast.search.url']}" />
+  </bean>
+  <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+  <!-- resources mapping="/resources/**" location="/resources/" / -->
+  <mvc:interceptors>
+    <mvc:interceptor>
+      <mvc:mapping path="/voting/**" />
+      <bean class="com.toast.votree.interceptor.VotingInterceptor" />
+    </mvc:interceptor>
+
+    <mvc:interceptor>
+      <mvc:mapping path="/**" />
+      <mvc:exclude-mapping path="/api/**/" />
+      <mvc:exclude-mapping path="/resources/**/" />
+      <bean class="com.toast.votree.interceptor.CookieInterceptor" />
+    </mvc:interceptor>
+
+  </mvc:interceptors>
+
+  <mvc:resources mapping="/resources/**" location="/resources/" />
+
+  <mvc:annotation-driven>
+    <mvc:message-converters>
+      <bean
+        class="org.springframework.http.converter.StringHttpMessageConverter" />
+      <bean
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+    </mvc:message-converters>
+  </mvc:annotation-driven>
+
+
+  <!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+    in the /WEB-INF/views directory -->
+  <bean id="jspViewResolver"
+    class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <property name="viewClass"
+      value="org.springframework.web.servlet.view.JstlView" />
+    <property name="prefix" value="/WEB-INF/views/" />
+    <property name="suffix" value=".jsp" />
+  </bean>
+
+  <!--  Creates the JSR-303 Validator -->
+  <bean id="localValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    <!-- <property name="validationMessageSource" ref="messageSource" /> -->
+  </bean>
+  
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basename" value="message/messages" />
+    <property name="defaultEncoding" value="utf-8" />
+  </bean>
+</beans>

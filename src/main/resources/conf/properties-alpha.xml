@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>ALPHA</comment>
+<!-- DB1 INFO -->
+<entry key="db1.url">jdbc:mysql://10.161.223.32:13306/votree_1</entry>
+<entry key="db1.username">rookie_1</entry>
+<entry key="db1.password">nhn!@#123</entry>
+
+<!-- DB2 INFO -->
+<entry key="db2.url">jdbc:mysql://10.161.223.32:13306/votree_2</entry>
+<entry key="db2.username">rookie_1</entry>
+<entry key="db2.password">nhn!@#123</entry>
+
+<!-- DB3(COMMON) INFO -->
+<entry key="db3.url">jdbc:mysql://10.161.223.32:13306/votree_common</entry>
+<entry key="db3.username">rookie_1</entry>
+<entry key="db3.password">nhn!@#123</entry>
+
+<!-- DB4(RESPONSE CHECK) INFO -->
+<entry key="db4.url">jdbc:mysql://10.161.223.32:13306/response_check</entry>
+<entry key="db4.username">rookie_1</entry>
+<entry key="db4.password">nhn!@#123</entry>
+
+<!-- REDIS INFO -->
+<entry key="redis.url">10.161.223.32</entry>
+<entry key="redis.port">6379</entry>
+
+<!-- REST SERVER INFO -->
+<entry key="restserver.url">alpha-votree.nhnent.com</entry>
+<entry key="restserver.port">8080</entry>
+
+<!-- FACEBOOK INFO -->
+<entry key="facebook.app.id">561198820709241</entry>
+<entry key="facebook.app.secret">b9f7f81f96a4a7fe4042d8977da3baca</entry>
+<entry key="facebook.redirect.url">http://alpha-votree.nhnent.com:8080/facebook/auth</entry>
+
+<!-- TWITTER INFO -->
+<entry key="twitter.app.id">1KDy4BML9UqVPSD751Pugbwh4</entry>
+<entry key="twitter.app.secret">UZmgxtNLzFfoS2csZAqYXhxPJ2aVGjEhnqkIGX4w5tiB1kKACA</entry>
+
+<!-- PAYCO INFO -->
+<entry key="payco.app.id">ALPKjxKfFSeU0PIvOU_E</entry>
+<entry key="payco.app.secret">PBpX1wcOdL</entry>
+<entry key="payco.redirect.url">http://alpha-votree.nhnent.com:8080/payco/auth</entry>
+
+<entry key="tcd.app.key">dQ0HVKxJVmzfRRDm</entry>
+<entry key="tcd.artifact.id">745</entry>
+
+<!-- L7 HEALTH CHECK -->
+<entry key="health.check.ondeploy.filepath">/home1/irteam/deploy/onDeploy</entry>
+
+<!-- TOAST SEARCH -->
+<entry key="user.toast.index.url">http://alpha-api-search.cloud.toast.com/search/v1.0/appkeys/ToastRookieBasecamp000000000000000000000000000000000000000000001/domains/user/indexing</entry>
+<entry key="votree.toast.index.url">http://alpha-api-search.cloud.toast.com/search/v1.0/appkeys/ToastRookieBasecamp000000000000000000000000000000000000000000001/domains/votree/indexing</entry>
+
+<entry key="user.toast.search.url">http://alpha-api-search.cloud.toast.com/search/v1.0/appkeys/ToastRookieBasecamp000000000000000000000000000000000000000000001/domains/user/search</entry>
+<entry key="votree.toast.search.url">http://alpha-api-search.cloud.toast.com/search/v1.0/appkeys/ToastRookieBasecamp000000000000000000000000000000000000000000001/domains/votree/search</entry>
+
+<!-- Log&Crash -->
+<entry key="logncrash.key">wrO6M8vqFhex1h1i</entry>
+<entry key="logncrash.url">http://api-logncrash.cloud.toast.com</entry>
+<entry key="logncrash.type">log-alpha</entry>
+
+</properties>

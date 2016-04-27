@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.toast.votree.sharding.VoteResultMapper">
+
+  <select id="selectVoteResultByVoteId" parameterType="int" resultMap="dataForChartResultMap">
+    SELECT votree_id, vote_id, vote_item_id, count(*) AS 'vote_per_selection',
+        (SELECT vote_item_value FROM tbl_vote_item ITEM WHERE BOX.vote_item_id = ITEM.vote_item_id) AS 'vote_item_value'
+    FROM tbl_vote_box BOX 
+    WHERE vote_id=#{vote_id}
+    GROUP BY BOX.vote_id, BOX.vote_item_id
+    ORDER BY BOX.vote_id ASC, vote_per_selection DESC
+  </select>
+
+  <resultMap type="java.util.HashMap" id="dataForChartResultMap">
+    <result property="voteId" column="vote_id" />
+    <collection property="series" javaType="java.util.ArrayList" ofType="map">
+      <result property="name" column="vote_item_value" />
+      <result property="data" column="vote_per_selection" />
+    </collection>
+  </resultMap>
+
+  <select id="selectVoteResultsInVotree" parameterType="string" resultMap="coverAllVoteDataResultMap">
+    SELECT votree_id, vote_id, vote_item_id, count(*) AS 'vote_per_selection',
+        (SELECT value FROM tbl_vote_item ITEM WHERE BOX.vote_item_id = ITEM.vote_item_id) AS 'vote_item_value'
+    FROM tbl_vote_box BOX 
+    WHERE votree_id=#{votree_id}
+    GROUP BY vote_id, vote_item_id
+    ORDER BY vote_id ASC, vote_per_selection DESC
+  </select>
+
+  <resultMap type="java.util.HashMap" id="coverAllVoteDataResultMap">
+    <result property="votreeId" column="votree_id" />
+    <collection property="voteList" javaType="java.util.ArrayList" ofType="map">
+      <id property="voteId" column="vote_id" />
+      <collection property="series" javaType="java.util.ArrayList" ofType="map">
+        <result property="name" column="vote_item_value" />
+        <result property="data" column="vote_per_selection" />
+      </collection>
+    </collection>
+  </resultMap>
+  
+  <select id="selectVotingsByVotreeId" parameterType="string" resultMap="voteBoxResultMap">
+    SELECT BOX.vote_box_id, BOX.user_id, BOX.vote_id, BOX.vote_item_id, BOX.votree_id, BOX.created_datetime, ITEM.vote_item_value, VOTE.topic
+    FROM tbl_vote_box BOX 
+    JOIN tbl_vote_item ITEM ON BOX.vote_item_id = ITEM.vote_item_id
+    JOIN tbl_vote VOTE ON BOX.vote_id = VOTE.vote_id
+    WHERE BOX.votree_id=#{votreeId}
+  </select>
+  
+  <resultMap type="com.toast.votree.vo.Voting" id="voteBoxResultMap">
+    <id property="userId" column="user_id" />
+    <result property="votreeId" column="votree_id" />
+    <collection property="votes" javaType="java.util.ArrayList" ofType="com.toast.votree.vo.Voting$VoteInVoting">
+      <result property="voteId" column="vote_id" />
+      <result property="topic" column="topic" />
+      <collection property="userChoices" javaType="java.util.ArrayList" ofType="int">
+        <result property="voteItemId" column="vote_item_id" />
+      </collection> 
+    </collection>
+  </resultMap>
+
+  <select id="selectVoteBoxesByVotreeId" parameterType="string" resultMap="voteBoxes">
+    SELECT user_id, vote_box_id, vote_id, vote_item_id
+    FROM tbl_vote_box
+    WHERE votree_id=#{votree_id}
+  </select>
+
+  <resultMap type="voteBox" id="voteBoxes">
+    <result property="userId" column="user_id" />
+    <result property="voteBoxId" column="vote_box_id" />
+    <result property="voteId" column="vote_id" />
+    <result property="voteItemId" column="vote_item_id" />
+  </resultMap>
+</mapper>

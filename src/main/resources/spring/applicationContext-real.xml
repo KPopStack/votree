@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!-- real DB 1 -->
+  <bean id="dataSource1" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://10.161.212.81:13306/votree" />
+    <property name="username" value="sqlgw" />
+    <property name="password" value="qhdks10@(" />
+  </bean>
+
+  <bean id="sqlSessionFactory1" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource1" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate1" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory1" />
+  </bean>
+  <!-- real DB 2 -->
+  <bean id="dataSource2" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://10.161.212.36:13306/votree" />
+    <property name="username" value="sqlgw" />
+    <property name="password" value="qhdks10@(" />
+  </bean>
+
+  <bean id="sqlSessionFactory2" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource2" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate2" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory2" />
+  </bean>
+
+  <!-- real DB :common -->
+  <bean id="dataSource_common" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://10.161.223.32:13306/votree_common" />
+    <property name="username" value="rookie_1" />
+    <property name="password" value="nhn!@#123" />
+  </bean>
+
+  <bean id="sqlSessionFactory_common" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource_common" />
+    <property name="configLocation" value="classpath:/mapper/mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:/mapper/*Mapper.xml" />
+  </bean>
+
+  <bean id="sqlSessionTemplate_common" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+    <constructor-arg index="0" ref="sqlSessionFactory_common" />
+  </bean>
+
+
+    <bean id="jedisConnectionFactory" class="com.toast.votree.factory.StwJedisConnectionPoolFactory"
+      p:use-pool="true" p:host-name="10.161.212.74" p:port="6379">
+    </bean>
+
+
+  <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnectionFactory">
+    <property name="keySerializer">
+      <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+    </property>
+    <property name="hashKeySerializer">
+      <bean class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+    </property>
+  </bean>
+
+  <bean id="dbShardingManager" class="com.toast.votree.manager.DbShardingManager">
+    <property name="sqlSessionTemplates">
+      <list>
+        <ref bean="sqlSessionTemplate1" />
+        <ref bean="sqlSessionTemplate2" />
+      </list>
+    </property>
+    <property name="commonSqlSessionTemplate" ref="sqlSessionTemplate_common" />
+  </bean>
+
+</beans>
